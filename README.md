@@ -1,3 +1,11 @@
+Desarrolle una API REST utilizando Spring Boot y JPA que realice las siguientes funciones
+
+• Cree el mantenimiento (listar, crear, actualizar, eliminar) para la tabla Producto con
+sus respectivas validaciones.
+• El servicio Rest de listar Productos deberá retornar el resultado de forma paginada
+
+
+
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
