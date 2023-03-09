@@ -2,6 +2,10 @@ package com.crud.producto.controller;
 
 
 import com.crud.producto.entity.Producto;
+import com.crud.producto.helper.IProductoHelper;
+import com.crud.producto.service.IProductoService;
+import com.crud.producto.util.SortedUnpaged;
+import com.crud.producto.viewmodel.ProductoModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -12,10 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import com.crud.producto.service.IProductoService;
-import com.crud.producto.util.SortedUnpaged;
-
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -24,19 +28,24 @@ import java.util.List;
 import java.util.Map;
 
 
-@Controller
 @Validated
+@Controller
 @RequestMapping("/api/v1")
 public class ProductController implements ProductAPI {
 
     @Autowired
     private IProductoService productoService;
 
+    @Autowired
+    private IProductoHelper productoHelper;
 
-    public List<Producto> index() {
-        return productoService.findAll();
+    @Override
+    public ResponseEntity<List<Producto>> index() {
+        ResponseEntity<List<Producto>> pageResponseEntity = new ResponseEntity<>(productoService.findAll(), HttpStatus.OK);
+        return pageResponseEntity;
     }
 
+    @Override
     public ResponseEntity<Page<Producto>> getProductsPaginated(@RequestParam(value = "page", required = true, defaultValue="0") Integer page, @RequestParam(value = "size", required = true, defaultValue="10") Integer size) {
         Sort sort =  Sort.by("id").descending();
         Pageable pageRequest;
@@ -51,6 +60,7 @@ public class ProductController implements ProductAPI {
         return pageResponseEntity;
     }
 
+    @Override
     public ResponseEntity<?> show(@PathVariable @Min(1) int id) {
         Producto producto = null;
         Map<String, Object> response = new HashMap<>();
@@ -68,11 +78,12 @@ public class ProductController implements ProductAPI {
         return new ResponseEntity<Producto>(producto, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> create(@Valid @RequestBody Producto producto) {
-        Producto newProducto = null;
+    @Override
+    public ResponseEntity<?> create(@Valid @RequestBody ProductoModel producto) {
+        Producto newProducto = new Producto();
         Map<String, Object> response = new HashMap<>();
         try {
-            newProducto = productoService.save(producto);
+            newProducto = productoService.save(productoHelper.setProducto(producto));
         } catch (DataAccessException e) {
             response.put("mensaje", "Error al realizar la insercion en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -84,7 +95,8 @@ public class ProductController implements ProductAPI {
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<?> update(@RequestBody @Valid Producto producto, @PathVariable int id) {
+    @Override
+    public ResponseEntity<?> update(@RequestBody @Valid ProductoModel producto, @PathVariable @Min(1) int id) {
         Producto currentProducto = productoService.findById(id);
         Producto productoUpdated = null;
         Map<String, Object> response = new HashMap<>();
@@ -93,9 +105,7 @@ public class ProductController implements ProductAPI {
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
         }
         try {
-            currentProducto.setCodigo(producto.getCodigo());
-            currentProducto.setNombre(producto.getNombre());
-            productoUpdated = productoService.save(currentProducto);
+            productoUpdated = productoService.save(productoHelper.setProducto(producto));
         } catch (DataAccessException e) {
             response.put("mensaje", "Error al actualizar el registro en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -107,6 +117,7 @@ public class ProductController implements ProductAPI {
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
 
+    @Override
     public ResponseEntity<?> delete(@PathVariable @Min(1) int id) {
         Map<String, Object> response = new HashMap<>();
         try {

@@ -1,34 +1,28 @@
 package com.crud.producto.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Producto {
+@Table(name = "producto", schema = "public")
+public class Producto implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank(message = "codigo no debe ser vacio")
-    @NotNull(message = "codigo no debe ser nulo")
-    @Size(max = 20)
+    @Column(name = "codigo", nullable = false)
     private String codigo;
 
-    @NotBlank(message = "nombre no debe ser vacio")
-    @NotNull(message = "nombre no debe ser nulo")
-    @Size(max = 200)
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 }

@@ -4,6 +4,7 @@ package com.crud.producto.controller;
 import com.crud.producto.entity.Producto;
 import com.crud.producto.util.MarkdownDescriptionFile;
 import com.crud.producto.viewmodel.ErrorGenerico;
+import com.crud.producto.viewmodel.ProductoModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,12 +19,11 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 
-@Validated
 public interface ProductAPI {
 
 
     @MarkdownDescriptionFile("producto-controller-listado.md")
-    @Operation(summary = "Obtener Producto", description = "", tags = {"producto-controller",})
+    @Operation(summary = "Obtener lista de productos", description = "", tags = {"producto-controller",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = ErrorGenerico.class))),
@@ -35,11 +34,11 @@ public interface ProductAPI {
     @RequestMapping(value = "/productos",
             produces = {"application/json;charset=UTF-8"},
             method = RequestMethod.GET)
-    List<Producto> index();
+    ResponseEntity<List<Producto>> index();
 
 
     @MarkdownDescriptionFile("producto-controller-listado.md")
-    @Operation(summary = "Obtener Producto", description = "", tags = {"producto-controller",})
+    @Operation(summary = "Obtener lista de productos paginados", description = "", tags = {"producto-controller",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = ErrorGenerico.class))),
@@ -54,7 +53,7 @@ public interface ProductAPI {
 
 
     @MarkdownDescriptionFile("producto-controller-obtener.md")
-    @Operation(summary = "Obtener Producto", description = "", tags = {"producto-controller",})
+    @Operation(summary = "Obtener producto por id", description = "", tags = {"producto-controller",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = ErrorGenerico.class))),
@@ -69,7 +68,7 @@ public interface ProductAPI {
 
 
     @MarkdownDescriptionFile("producto-controller-guardar.md")
-    @Operation(summary = "Guarda Producto", description = "", tags = {"producto-controller",})
+    @Operation(summary = "Guarda producto", description = "", tags = {"producto-controller",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = ErrorGenerico.class))),
@@ -81,11 +80,11 @@ public interface ProductAPI {
             produces = {"application/json;charset=UTF-8"},
             consumes = {"application/json;charset=UTF-8"},
             method = RequestMethod.POST)
-    ResponseEntity<?> create(@Valid @RequestBody Producto product);
+    ResponseEntity<?> create(@Valid @RequestBody ProductoModel product);
 
 
     @MarkdownDescriptionFile("producto-controller-editar.md")
-    @Operation(summary = "Edita Producto", description = "", tags = {"producto-controller",})
+    @Operation(summary = "Editar producto", description = "", tags = {"producto-controller",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = ErrorGenerico.class))),
@@ -97,11 +96,11 @@ public interface ProductAPI {
             produces = {"application/json;charset=UTF-8"},
             consumes = {"application/json;charset=UTF-8"},
             method = RequestMethod.PUT)
-    ResponseEntity<?> update(@RequestBody @Valid Producto product, @PathVariable @Min(1) int id);
+    ResponseEntity<?> update(@RequestBody @Valid ProductoModel product, @PathVariable @Min(1) int id);
 
 
     @MarkdownDescriptionFile("producto-controller-eliminar.md")
-    @Operation(summary = "Eliminar Producto", description = "", tags = {"producto-controller",})
+    @Operation(summary = "Eliminar producto por id", description = "", tags = {"producto-controller",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = ErrorGenerico.class))),
