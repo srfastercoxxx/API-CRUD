@@ -1,0 +1,65 @@
+@startuml producto-controller-listado
+'https://plantuml.com/sequence-diagram
+title "lista de productos"
+
+cliente-> "api-producto": Petición a endpoint [GET] /productos
+"api-producto"--> "base de datos":Peticion a la base de datos  findAll()
+"base de datos"--> "api-producto": Respuesta servicio
+"api-producto"--> cliente: Respuesta de productos
+
+@enduml
+
+@startuml producto-controller-listado-paginado
+'https://plantuml.com/sequence-diagram
+title "lista de productos paginados"
+
+cliente-> "api-producto": Petición a endpoint [GET] /productos-paginated
+"api-producto"--> "base de datos":Peticion a la base de datos  getProductsPaginated()
+"base de datos"--> "api-producto": Respuesta servicio
+"api-producto"--> cliente: Respuesta de productos
+
+@enduml
+
+@startuml producto-controller-obtener
+'https://plantuml.com/sequence-diagram
+title "Obtener producto"
+
+cliente-> "api-producto": Petición a endpoint [GET] producto/{id}
+"api-producto"--> "base de datos":Petición a la base de datos findById(id)
+"base de datos"--> "api-producto": Respuesta servicio
+"api-producto"--> cliente: Respuesta de producto
+
+@enduml
+
+@startuml producto-controller-guardar
+'https://plantuml.com/sequence-diagram
+title "Guardar producto"
+
+cliente-> "api-producto": Petición a endpoint [POST] /create
+"api-producto"--> "base de datos":Petición a la base de datos save(producto)
+"base de datos"--> "api-producto": Respuesta servicio
+"api-producto"--> cliente: Respuesta de create
+
+@enduml
+
+@startuml producto-controller-editar
+'https://plantuml.com/sequence-diagram
+title "Editar producto"
+
+cliente-> "api-producto": Petición a endpoint [PUT] /producto/{id}
+"api-producto"--> "base de datos":Petición a la base de datos save(producto)
+"base de datos"--> "api-producto": Respuesta servicio
+"api-producto"--> cliente: Respuesta de producto
+
+@enduml
+
+@startuml producto-controller-eliminar
+'https://plantuml.com/sequence-diagram
+title "Eliminar producto"
+
+cliente-> "api-producto": Petición a endpoint [DELETE] /producto/{id}
+"api-producto"--> "base de datos":Petición a la base de datos delete(id)
+"base de datos"--> "api-producto": Respuesta servicio
+"api-producto"--> cliente: Respuesta de producto
+
+@enduml

@@ -19,26 +19,24 @@ import com.crud.producto.util.SortedUnpaged;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-@RestController
+@Controller
 @Validated
 @RequestMapping("/api/v1")
-public class ProductController {
+public class ProductController implements ProductAPI {
 
     @Autowired
     private IProductoService productoService;
 
-    @GetMapping("/productos")
+
     public List<Producto> index() {
         return productoService.findAll();
     }
 
-    @GetMapping("/productos-paginated")
     public ResponseEntity<Page<Producto>> getProductsPaginated(@RequestParam(value = "page", required = true, defaultValue="0") Integer page, @RequestParam(value = "size", required = true, defaultValue="10") Integer size) {
         Sort sort =  Sort.by("id").descending();
         Pageable pageRequest;
@@ -53,7 +51,6 @@ public class ProductController {
         return pageResponseEntity;
     }
 
-    @GetMapping("/producto/{id}")
     public ResponseEntity<?> show(@PathVariable @Min(1) int id) {
         Producto producto = null;
         Map<String, Object> response = new HashMap<>();
@@ -71,10 +68,8 @@ public class ProductController {
         return new ResponseEntity<Producto>(producto, HttpStatus.OK);
     }
 
-    @PostMapping("/producto")
     public ResponseEntity<?> create(@Valid @RequestBody Producto producto) {
         Producto newProducto = null;
-
         Map<String, Object> response = new HashMap<>();
         try {
             newProducto = productoService.save(producto);
@@ -89,7 +84,6 @@ public class ProductController {
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/producto/{id}")
     public ResponseEntity<?> update(@RequestBody @Valid Producto producto, @PathVariable int id) {
         Producto currentProducto = productoService.findById(id);
         Producto productoUpdated = null;
@@ -113,7 +107,6 @@ public class ProductController {
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/producto/{id}")
     public ResponseEntity<?> delete(@PathVariable @Min(1) int id) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -126,4 +119,5 @@ public class ProductController {
         response.put("mensaje", "El registro ha sido eliminado con exito");
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
+
 }
